@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:insert="view/common/common::head" />
+	<!-- include libraries(jQuery, bootstrap) -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<!-- include summernote css/js -->
+	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#summernote').summernote();
+		});
+	</script>
+</head>
+<body>
+	<th:block th:insert="view/common/common::header" />
+	<main>
+		<h1>상세페이지</h1>
+		<div>
+			<div id="detail-view">
+				<p>
+					<a href="/board/write">글쓰기</a>
+					<a href="/board">목록</a>
+				</p>
+				<table>
+					<thead>
+						<tr>
+							<td>글번호</td>
+							<td>제목</td>
+							<td>조회수</td>
+							<td>작성자</td>
+							<td>작성시간</td>
+							<td>수정시간</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td id="no" th:text="${detail.no}"></td>
+							<td th:text="${detail.title}"></td>
+							<td th:text="${detail.readCount}"></td>
+							<td th:text="${detail.writer}"></td>
+							<td th:text="${detail.createdDate}"></td>
+							<td th:text="${detail.updatedDate}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<p th:utext="${detail.content}"></p>
+					<!-- [(${detail.content})] -->
+				</div>
+				<div>
+					<a href="/board">목록</a>
+					<button type="button" id="btn-edit">수정</button>
+					<button type="button" id="btn-del">삭제</button>
+				</div>
+			</div>
+			<script th:inline="javascript" type="text/javascript">
+				$(function(){
+					$("#btn-del").click(function(){
+						var result=confirm("게시물을 삭제할까요??");
+						if(!result)return;
+						/* var no=$("#no").text(); */
+						$.ajax({
+							url:"/board/[[${detail.no}]]"/*+ no.trim() */,
+							type:"post",
+							data:{"_method":"delete"},
+							success:function(){
+								location.href="/board";
+							}
+						});
+					});
+					$("#btn-edit").click(function(){
+						$("#detail-view").hide();
+						$("#edit-form").show();
+					});
+					$("#btn-cancel").click(function(){
+						$("#detail-view").show()
+						$("#edit-form").hide();
+					});
+					
+				});
+			</script>
+		<!--////////////수정시//////////////  -->
+			<form style="display: none;" id="edit-form" th:action="|/board/${detail.no}|" method="post">
+				<table>
+					<thead>
+						<tr>
+							<td>글번호</td>
+							<td>제목</td>
+							<td>조회수</td>
+							<td>작성자</td>
+							<td>작성시간</td>
+							<td>수정시간</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td th:text="${detail.no}"></td>
+							<td>
+								<input type="text" name="title" th:value="${detail.title}">
+							</td>
+							<td th:text="${detail.readCount}"></td>
+							<td th:text="${detail.writer}"></td>
+							<td th:text="${detail.createdDate}"></td>
+							<td th:text="${detail.updatedDate}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<textarea name="content" id="summernote">[(${detail.content})]</textarea>
+				<!-- [(${detail.content})] -->
+				</div>
+				<div>
+					<a href="/board">목록</a>
+					<input type="hidden" name="_method" value="PUT">
+					<button type="submit">수정</button>
+					<button id="btn-cancel" type="button">취소</button>
+				</div>
+			</form>
+		</div>
+	</main>
+</body>
+</html>
