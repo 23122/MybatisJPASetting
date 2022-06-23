@@ -5,7 +5,7 @@
 	<title>Insert title here</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/myScript.js"></script>
-	<script th:inline="javascript">
+	<!-- <script th:inline="javascript">
 	$(function(){
 		$("#btn-b2").click(function(){
 			var info= /*[[${session.loginfo}]]*/null;
@@ -19,8 +19,7 @@
 			}
 		});
 	});
-		
-	</script>
+	</script> -->
 </head>
 <body>
 
@@ -37,7 +36,7 @@
 				<a href="/member/signout">로그아웃</a>
 			</span>
 			<button type="button" id="btn-b">MTBATIS-게시판</button>
-			<button type="button" id="btn-b2">JPA-게시판</button>
+			<a href="/boardjpa"><button type="button" id="btn-b2">JPA-게시판</button></a>
 		</div>
 	</header>
 </body>

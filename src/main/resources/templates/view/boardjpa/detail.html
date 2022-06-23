@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<th:block th:insert="view/common/common::head" />
-	<!-- include libraries(jQuery, bootstrap) -->
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<!-- include summernote css/js -->
-	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-	<script type="text/javascript">
-		$(function(){
-			$('#summernote').summernote();
-		});
-	</script>
+<th:block th:insert="view/common/common::head" />
+<!-- include libraries(jQuery, bootstrap) -->
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!-- include summernote css/js -->
+<link
+	href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#summernote').summernote();
+	});
+</script>
 </head>
 <body>
 	<th:block th:insert="view/common/common::header" />
@@ -22,8 +28,8 @@
 		<div>
 			<div id="detail-view">
 				<p>
-					<a href="/board/write">글쓰기</a>
-					<a href="/board">목록</a>
+					<a href="/boardjpa/write" th:if="${session.loginfo}">글쓰기</a>
+					<a href="/boardjpa">목록</a>
 				</p>
 				<table>
 					<thead>
@@ -52,41 +58,104 @@
 					<!-- [(${detail.content})] -->
 				</div>
 				<div>
-					<a href="/board">목록</a>
-					<button type="button" id="btn-edit">수정</button>
-					<button type="button" id="btn-del">삭제</button>
+					<a href="/boardjpa">목록</a>
+					<th:block th:if="${session.loginfo}">
+						<button type="button" id="btn-edit"
+							th:if="${session.loginfo.email eq detail.writer}">수정</button>
+						<button type="button" id="btn-del"
+							th:if="${session.loginfo.email eq detail.writer}">삭제</button>
+					</th:block>
 				</div>
 			</div>
 			<script th:inline="javascript" type="text/javascript">
-				$(function(){
-					$("#btn-del").click(function(){
-						var result=confirm("게시물을 삭제할까요??");
-						if(!result)return;
-						/* var no=$("#no").text(); */
-						$.ajax({
-							url:"/board/[[${detail.no}]]"/*+ no.trim() */,
-							type:"post",
-							data:{"_method":"delete"},
-							success:function(){
-								location.href="/board";
-							}
-						});
+				$(function() {
+					$("#btn-del").click(
+							function() {
+								var result = confirm("게시물을 삭제할까요??");
+								if (!result)
+									return;
+								/* var no=$("#no").text(); */
+								$.ajax({
+									url : "/boardjpa/[[${detail.no}]]"/*+ no.trim() */,
+									type : "delete",
+									//data:{"_method":"delete"},
+									success : function() {
+										location.href = "/boardjpa";
+									}
+								});
 					});
-					$("#btn-edit").click(function(){
+					$("#btn-edit").click(function() {
 						$("#detail-view").hide();
 						$("#edit-form").show();
 					});
-					$("#btn-cancel").click(function(){
+					$("#btn-cancel").click(function() {
 						$("#detail-view").show()
 						$("#edit-form").hide();
 					});
-					
+
 				});
 			</script>
-		<!--////////////수정시//////////////  -->
-			<form style="display: none;" id="edit-form" th:action="|/board/${detail.no}|" method="post">
+			<script th:inline="javascript">
+			//페이지 로딩시 실행
+				function getReplyes(){
+					$.ajax({
+						url : "/boardjpa/[[${detail.no}]]/replies",
+						type : "get",
+						success : function(result){
+							$("#reply-list").html(result);
+						}
+					});
+				}
+				$(function() {
+					getReplyes();
+					
+					$("#btn-re").click(
+							function() {
+								$.ajax({
+									url : "/boardjpa/[[${detail.no}]]/reply",
+									type : "post",
+									data : {
+										replier : $("#loguser").val(),
+										text : $("#reply").val()
+									},
+									success : function(result) {
+										if (result) {
+											$("#reply").val("");
+											alert("댓글등록 완료!");
+											getReplyes();
+										}
+									}
+								});
+							});
+					/* $("#re-edit").click();
+					$("#re-del").click(
+							function() {
+								var result = confirm("댓글을 삭제할까요??");
+								if (!result)
+									return;
+								$.ajax({
+									url : "/boardjpa/[[${detail.no}]]/reply",
+									type : "delete",
+									success : function() {
+										location.href = "/boardjpa/" + "[[${detail.no}]]";
+									}
+								});
+
+					});
+					*/
+				});
+			</script>
+			<div>
+				<input th:if="${session.loginfo}" id="loguser" type="hidden" th:value="${session.loginfo.email}">
+				<input type="text"id="reply">
+				<button id="btn-re">댓글등록</button>
+				<div id="reply-list"></div>
+			</div>
+			<!--////////////수정시//////////////  -->
+			<form style="display: none;" id="edit-form"
+				th:action="|/boardjpa/${detail.no}|" method="post">
 				<table>
-					<thead>
+				 	<thead>
 						<tr>
 							<td>글번호</td>
 							<td>제목</td>
@@ -99,9 +168,8 @@
 					<tbody>
 						<tr>
 							<td th:text="${detail.no}"></td>
-							<td>
-								<input type="text" name="title" th:value="${detail.title}">
-							</td>
+							<td><input type="text" name="title"
+								th:value="${detail.title}"></td>
 							<td th:text="${detail.readCount}"></td>
 							<td th:text="${detail.writer}"></td>
 							<td th:text="${detail.createdDate}"></td>
@@ -111,11 +179,10 @@
 				</table>
 				<div>
 					<textarea name="content" id="summernote">[(${detail.content})]</textarea>
-				<!-- [(${detail.content})] -->
 				</div>
 				<div>
-					<a href="/board">목록</a>
-					<input type="hidden" name="_method" value="PUT">
+					<a href="/boardjpa">목록</a> <input type="hidden" name="_method"
+						value="PUT">
 					<button type="submit">수정</button>
 					<button id="btn-cancel" type="button">취소</button>
 				</div>
