@@ -17,7 +17,7 @@ public class JpaBoardListDTO {
 	public JpaBoardListDTO(JpaBoardEntity e) {
 		no=e.getNo();
 		title=e.getTitle();
-		writer=e.getWriter();
+		writer=e.getMemberEntity().getMemberEmail();
 		readCount=e.getReadCount();
 		updatedDate=e.getUpdatedDate();
 	}

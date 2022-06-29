@@ -8,10 +8,10 @@ import lombok.Data;
 @Data
 public class MemberDTO {
 	
-	private long no;
-	private String email;
-	private String name;
-	private String pass;
+	private long memberNo;
+	private String memberEmail;
+	private String memberName;
+	private String memberPass;
 	private LocalDateTime createdDate;
 	private LocalDateTime updatedDate;
 

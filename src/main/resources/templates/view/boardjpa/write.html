@@ -20,7 +20,7 @@
 	<main>
 		<h1>jpa글쓰기페이지</h1>
 		<div>
-			<form action="/boardjpa/write" method="post">
+			<form action="/boardjpa/write" method="post" enctype="multipart/form-data">
 				<p>
 					<input type="text" name="title" placeholder="제목">
 				</p>
@@ -28,9 +28,38 @@
 					<textarea id="summernote" name="content"></textarea>
 				</p>
 				<p>
-					<input type="hidden" name="writer" th:value="${session.loginfo.email}">
+					<label id="img-disp" for="file" style="display: inline-block;width: 100px;
+					height: 100px;background-image: url('');background-size: contain;margin-left: 10px;
+					background-color: rgba(6,195,251,0.25); border: 1px dotted rgb(6,195,251); text-align: center;
+					line-height: 100px;background-repeat: no-repeat;background-position: center;">+</label>
+					<input type="file" id="file" name="file" multiple="multiple" style="display: none;">
+				</p>
+				<p>
+					<input type="hidden" id="file-change-name" name="fileChangeName">
+					<input type="hidden" name="memberNo" th:value="${session.loginfo.memberNo}">
 					<button>글쓰기완료</button>
 				</p>
+				<script type="text/javascript">
+				$(function(){
+					$("#file").change(function(){
+						var file=$("#file")[0].files[0];
+						var formData=new FormData();
+						formData.append("file",file);
+						formData.append("prevImgName",$("#file-change-name").val());
+						$.ajax({
+							url:"/boardjpa/fileupload",
+							type:"post",
+							data:formData,
+							processData: false,
+			                contentType: false,
+							success:function(result){
+								$("#img-disp").css("background-image","url(/upload/temp/"+result+")")
+								$("#file-change-name").val(result);
+							}
+						});
+					});
+				});
+				</script>
 			</form>
 		</div>
 	</main>

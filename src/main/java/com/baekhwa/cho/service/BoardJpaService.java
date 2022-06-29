@@ -1,15 +1,13 @@
 package com.baekhwa.cho.service;
 
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.baekhwa.cho.domain.dto.jpa.JpaBoardInsertDTO;
 import com.baekhwa.cho.domain.dto.jpa.JpaBoardUpdateDTO;
 import com.baekhwa.cho.domain.dto.jpa.ReplyInsertDTO;
 
 public interface BoardJpaService {
-
-	String save(JpaBoardInsertDTO dto);
 
 	void list(int pageNo, Model model);
 
@@ -22,5 +20,9 @@ public interface BoardJpaService {
 	boolean reply(ReplyInsertDTO dto);
 
 	String replies(long bno, Model model);
+
+	String save(JpaBoardInsertDTO dto, MultipartFile[] file);
+
+	String fileUpload(MultipartFile file, String prevImgName);
 
 }

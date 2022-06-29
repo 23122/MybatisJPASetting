@@ -3,6 +3,7 @@ package com.baekhwa.cho.domain.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString(exclude = {"memberEntity","deliveryEntity"})
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,12 +41,18 @@ public class OrderEntity {
 		orderEntities.add(itemOrderEntity);
 	}
 	
-	@JoinColumn
+	@JoinColumn(name = "memberNo",nullable = false)
 	@ManyToOne
-	MemberEntity memberEntity;
+	private MemberEntity memberEntity;
 	
-	@JoinColumn(name = "deliveryNo")
+	public OrderEntity cartMember(MemberEntity memberEntity) {
+		this.memberEntity=memberEntity;
+		return this;
+	}
+	
+	@JoinColumn(name = "deliveryNo",nullable = false)
 	@OneToOne
 	private DeliveryEntity deliveryEntity;
+	
 	
 }

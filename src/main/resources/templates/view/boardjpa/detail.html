@@ -57,18 +57,26 @@
 					<p th:utext="${detail.content}"></p>
 					<!-- [(${detail.content})] -->
 				</div>
+				<div th:each="f : ${detail.files}">
+						<a href="#" id="download">
+							<input type="hidden" id="fileNo" th:value="${f.fileNo}">
+							<span>[[${f.fileOriginalName}]]</span>
+							<span>[[${f.fileSize/(1024*1024)}]]</span>
+						</a>
+					</div>
 				<div>
 					<a href="/boardjpa">목록</a>
 					<th:block th:if="${session.loginfo}">
 						<button type="button" id="btn-edit"
-							th:if="${session.loginfo.email eq detail.writer}">수정</button>
+							th:if="${session.loginfo.email}">수정</button>
 						<button type="button" id="btn-del"
-							th:if="${session.loginfo.email eq detail.writer}">삭제</button>
+							th:if="${session.loginfo.email}">삭제</button>
 					</th:block>
 				</div>
 			</div>
 			<script th:inline="javascript" type="text/javascript">
 				$(function() {
+					$("#download").click(downladClicked)
 					$("#btn-del").click(
 							function() {
 								var result = confirm("게시물을 삭제할까요??");
@@ -92,8 +100,15 @@
 						$("#detail-view").show()
 						$("#edit-form").hide();
 					});
-
 				});
+				function downladClicked(){
+					$.ajax({
+						url : "/boardjpa/files/"+$("#fileNo").val(),
+						success : function(result){
+							location="/boardjpa/files/"+$("#fileNo").val();
+						}
+					});
+				}
 			</script>
 			<script th:inline="javascript">
 			//페이지 로딩시 실행
@@ -171,7 +186,7 @@
 							<td><input type="text" name="title"
 								th:value="${detail.title}"></td>
 							<td th:text="${detail.readCount}"></td>
-							<td th:text="${detail.writer}"></td>
+							<td></td>
 							<td th:text="${detail.createdDate}"></td>
 							<td th:text="${detail.updatedDate}"></td>
 						</tr>
@@ -180,6 +195,11 @@
 				<div>
 					<textarea name="content" id="summernote">[(${detail.content})]</textarea>
 				</div>
+				<div th:each="f:${detail.files}">
+						<span>[[${f.fileOriginalName}]]</span>
+						<span>[[${f.fileSize/(1024*1024)}]]</span>
+						<a href="#">X</a>
+					</div>
 				<div>
 					<a href="/boardjpa">목록</a> <input type="hidden" name="_method"
 						value="PUT">

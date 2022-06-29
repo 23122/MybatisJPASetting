@@ -19,6 +19,14 @@ JPA Entity 의 연관관계
 	외래키를 결정해주는 Entity가 주인(OWNER)
 	-단방향일경우 @JoinColumn 설정된 Entity가 주인
 	:일반적으로 FK가 생성된 물리DB에 Entity를 주인으로 선택해서 사용
-	-양방향 일다대아니경우 다쪽 @JoinColumn,일쪽에 @OneToMany(mappedBy로 주인의 필드명 입력):읽기전용
+	-양방향 일다대아닐경우 다쪽 @JoinColumn,일쪽에 @OneToMany(mappedBy로 주인의 필드명 입력):읽기전용
 -------------------------
---  @ManyToOne를 정용하자 어디에다가?? FK가 만들어질 테이블을
+--  @ManyToOne를 적용하자 어디에다가?? FK가 만들어질 테이블을
+--  @OneToMany
+--  DML(select : insert,update,delete)
+--  연관관계가 설정이 되어있을때 데이터 변경을 주엔티티 기준으로 하시면 편합니다. : cascade
+
+
+-- 사이트 선정-- 파악 : 구현페이지 개수,유형,기능
+-- 헤더,푸터,로그인,회원가입,메뉴(서브메뉴)
+-- 사이트 로고: 자기만의 로고 -폰트

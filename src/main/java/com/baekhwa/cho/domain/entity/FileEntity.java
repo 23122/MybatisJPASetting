@@ -1,12 +1,10 @@
 package com.baekhwa.cho.domain.entity;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,19 +14,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "categoryItem")
 @Getter
-public class CategoryItemEntity {
+@Entity(name = "file")
+public class FileEntity {
 	
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	private long CategoryItemNo;
+	private long fileNo;
 	
-	@JoinColumn(name = "categoryNo",nullable = false)
-	@ManyToOne
-	CategoryEntity categoryEntity;
+	@Column(nullable = false)
+	private String fileUrl;
+	@Column(nullable = false)
+	private String fileOriginalName;
+	@Column(nullable = false)
+	private String fileChangeName;
+	@Column(nullable = false)
+	private long fileSize;
 	
-	@JoinColumn(name = "itemNo",nullable = false)
-	@ManyToOne(cascade = CascadeType.ALL)
-	ItemEntity itemEntity;
 }

@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class LoginDTO {
-	
+	private long memberNo;
 	private String email;
 	private String name;
 	
 	public LoginDTO(MemberDTO dto){
-		email=dto.getEmail();
-		name=dto.getName();
+		memberNo=dto.getMemberNo();
+		email=dto.getMemberEmail();
+		name=dto.getMemberName();
 	}
 }

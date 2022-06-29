@@ -47,13 +47,13 @@ public class MemberServiceProc implements MemberService {
 			//회원이 존재하면
 			//비밀번호 확인할께요..
 			MemberDTO member=result.get();
-			if(member.getPass().equals( EncryptUtils.encryptSHA256(dto.getPass()) ) ) {
+			if(member.getMemberPass().equals( EncryptUtils.encryptSHA256(dto.getPass()) ) ) {
 				//비밀번호 일치한 경우
 				//session에 로그인정보 저장하면됩니다.
 				//???? 이름, email
 				LoginDTO loginfo=LoginDTO.builder()
-						.name(member.getName())
-						.email(member.getEmail())
+						.name(member.getMemberName())
+						.email(member.getMemberEmail())
 						.build();
 				session.setAttribute("loginfo", loginfo);
 				return "redirect:/";
@@ -73,7 +73,7 @@ public class MemberServiceProc implements MemberService {
 		if(result.isPresent()) {
 			//회원이 존재합니다.
 			//패스워드 비교
-			if(result.get().getPass().equals(EncryptUtils.encryptSHA256(dto.getPass()))) {
+			if(result.get().getMemberPass().equals(EncryptUtils.encryptSHA256(dto.getPass()))) {
 				//비밀번호일치
 				//MemberDTO -> LoginDTO
 				//LoginDTO loginfo=result.map(LoginDTO::new).get();

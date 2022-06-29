@@ -1,8 +1,8 @@
 package com.baekhwa.cho.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +28,7 @@ public class MemberEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private long memberNo;
-	@Column(nullable = false)
+	@Column(nullable = false,unique = true)
 	private String memberEmail;
 	@Column(nullable = false)
 	private String memberPass;
@@ -41,7 +41,11 @@ public class MemberEntity {
 	
 	@Builder.Default
 	@OneToMany(mappedBy = "memberEntity")
-	private List<OrderEntity> orderEntities =new ArrayList<OrderEntity>();
+	private List<OrderEntity> orderEntities=new Vector<OrderEntity>();
+	
+	@Builder.Default
+	@OneToMany(mappedBy = "memberEntity")
+	private List<JpaBoardEntity> jpaBoardEntities=new Vector<JpaBoardEntity>();
 	
 	public void addOrderEntity(OrderEntity orderEntity) {
 		orderEntities.add(orderEntity);

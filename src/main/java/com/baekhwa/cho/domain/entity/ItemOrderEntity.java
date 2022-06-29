@@ -1,5 +1,6 @@
 package com.baekhwa.cho.domain.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,21 +18,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Entity(name = "itemOrder")
+@Entity(name = "cart")
 public class ItemOrderEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "cartNo")
 	@Id
 	private long itemOrderNo;
-	@Column(nullable = false)
+	@Column(name = "cartPrice",nullable = false)
 	private int itemOrderPrice;
-	@Column(nullable = false)
+	@Column(name = "cartCount",nullable = false)
 	private int itemOrderCount;
 	
-	@JoinColumn(name = "orderNo")
-	@ManyToOne
+	@JoinColumn(name = "orderNo",nullable = false)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	OrderEntity orderEntity;
 	
-	@JoinColumn(name = "itemNo")
-	@ManyToOne
+	@JoinColumn(name = "itemNo",nullable = false)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	ItemEntity itemEntity;
 }

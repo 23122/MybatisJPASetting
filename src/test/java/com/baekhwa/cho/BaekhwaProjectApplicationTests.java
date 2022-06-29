@@ -19,8 +19,17 @@ import com.baekhwa.cho.domain.entity.CategoryEntity;
 import com.baekhwa.cho.domain.entity.CategoryItemEntity;
 import com.baekhwa.cho.domain.entity.CategoryItemRepository;
 import com.baekhwa.cho.domain.entity.CategoryRepository;
+import com.baekhwa.cho.domain.entity.DeliveryEntity;
+import com.baekhwa.cho.domain.entity.FileEntity;
 import com.baekhwa.cho.domain.entity.ItemEntity;
-import com.baekhwa.cho.domain.entity.ItemRepository;
+import com.baekhwa.cho.domain.entity.ItemOrderEntity;
+import com.baekhwa.cho.domain.entity.ItemOrderRepository;
+import com.baekhwa.cho.domain.entity.JpaBoardEntity;
+import com.baekhwa.cho.domain.entity.JpaBoardEntityRepository;
+import com.baekhwa.cho.domain.entity.MemberEntity;
+import com.baekhwa.cho.domain.entity.OrderEntity;
+import com.baekhwa.cho.domain.entity.OrderRepository;
+import com.baekhwa.cho.domain.entity.ReplyEntity;
 import com.baekhwa.cho.mybatis.mapper.BoardMapper;
 import com.baekhwa.cho.mybatis.mapper.MemberMapper;
 import com.baekhwa.cho.service.BoardJpaService;
@@ -63,16 +72,16 @@ class BaekhwaProjectApplicationTests {
 
 	@Autowired
 	BoardJpaService service;
-
+	
 //	@Test
 	void jpa더미() {
 		IntStream.rangeClosed(1, 100).forEach(i -> {
 			JpaBoardInsertDTO dto = new JpaBoardInsertDTO();
 			dto.setTitle("더미" + i);
 			dto.setContent("더미내용" + i);
-			dto.setWriter("super");
+			dto.setMemberNo(1);
 
-			service.save(dto);
+			/* service.save(dto); */
 		});
 
 	}
@@ -112,8 +121,8 @@ class BaekhwaProjectApplicationTests {
 		}
 	}
 	
-	@Transactional
-	@Test
+//	@Transactional
+//	@Test
 	void 카테고리이름검색_상품조회() {
 		CategoryEntity result = categoryRepository.findByCategoryName("식품");
 		List<CategoryItemEntity> categoryItem=result.getCategoryItemEntities();
@@ -121,4 +130,56 @@ class BaekhwaProjectApplicationTests {
 			System.out.println(r.getItemEntity());
 		}
 	}
+	
+	@Autowired
+	ItemOrderRepository itemOrderRepository;
+	
+//	@Test
+	void 장바구니_상품추가() {
+		MemberEntity m=MemberEntity.builder().memberNo(1L).build();
+		ItemOrderEntity itemOrderEntity=ItemOrderEntity.builder()
+				.orderEntity(OrderEntity.builder().status("장바구니")
+						.deliveryEntity(DeliveryEntity.builder().deliveryNo(1).build())
+						.build().cartMember(m))
+//				.orderEntity(OrderEntity.builder().
+//						memberEntity(MemberEntity.builder().memberNo(1).build())
+//						.build())
+				.itemEntity(ItemEntity.builder().itemNo(3L).build())
+				.itemOrderCount(1).itemOrderPrice(2000)
+				.build();
+		itemOrderRepository.save(itemOrderEntity);
+	}
+	
+	@Autowired
+	OrderRepository orderRepository;
+	
+//	@Transactional
+//	@Test
+	void 특정회원의_장바구니조회() {
+		orderRepository.findAllByMemberEntityMemberNoAndStatus(1L,"장바구니").forEach(e->{
+			/* e.get *//*.forEach(c->{
+				System.out.pruntln(c.getItem()+":"+c.getCount+":"+c.getOrderPrice());
+			}*/
+		});
+	}
+	
+	@Autowired
+	JpaBoardEntityRepository entityRepository;
+	
+	@Test
+	void 파일적용저장테스트() {
+		JpaBoardEntity entity=JpaBoardEntity.builder().title("파일테스트 제목").content("파일테스트 내용")
+				.memberEntity(MemberEntity.builder()
+						.memberNo(1)
+						.build())
+				.build()
+				.addFile(FileEntity.builder()
+						.fileUrl("/upload/file/")
+						.fileOriginalName("img01.jpg")
+						.fileChangeName("img01_220627100.jpg")
+						.fileSize(1024)
+						.build());
+		entityRepository.save(entity);
+	}
+
 }

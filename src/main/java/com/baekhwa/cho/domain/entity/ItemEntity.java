@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Synchronized;
 import lombok.ToString;
 
 @ToString(exclude = {"categoryItemEntities","itemOrderEntities"})
@@ -48,7 +49,7 @@ public class ItemEntity {
 	
 	@Builder.Default
 	@OneToMany(mappedBy = "itemEntity",fetch = FetchType.LAZY)
-	private List<CategoryItemEntity> categoryItemEntities=new Vector<CategoryItemEntity>();
+	private List<CategoryItemEntity> categoryItemEntities=new ArrayList<CategoryItemEntity>();
 
 	public ItemEntity addCategoryItemEntity(CategoryItemEntity categoryItemEntity) {
 		categoryItemEntities.add(categoryItemEntity);
